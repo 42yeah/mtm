@@ -1,5 +1,6 @@
 function main()
     clear_stuffs();
+
 %     unfinished = readtable("data/unfinished.csv");
      finished = readtable("data/finished.csv");
 %     users = readtable("data/users.csv");
