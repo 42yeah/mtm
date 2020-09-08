@@ -18,6 +18,9 @@ function graphs()
     bivariate_histogram_plot();
     categorical_histogram_plot();
     heatmap_plot();
+    pie_plot();
+    pie_plot_explode();
+    pie_plot_3d();
 end
 
 function line_plot()
@@ -229,6 +232,27 @@ function heatmap_plot()
     names = {'hello'; 'goodbye'; 'whatever'; 'random'};
     age = randi(10, length(names), 1);
     t = table(names, age);
-    disp(t);
+    figure;
     heatmap(t, 'names', 'age');
 end
+
+function pie_plot()
+    rv = randi(100, 5, 1);
+    figure;
+    pie(rv, {'First'; 'Second'; 'Third'; 'Forth'; 'Fifth'});
+end
+
+function pie_plot_explode()
+    rv = randi(100, 5, 1);
+    exp = randi(1, 5, 1);
+    figure;
+    pie(rv, exp, {'First'; 'Second'; 'Third'; 'Forth'; 'Fifth'});
+end
+
+function pie_plot_3d()
+    rv = randi(100, 5, 1);
+    exp = randi(1, 5, 1);
+    figure;
+    pie3(rv, exp, {'First'; 'Second'; 'Third'; 'Forth'; 'Fifth'});
+end
+
