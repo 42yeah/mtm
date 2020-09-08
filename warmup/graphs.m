@@ -38,6 +38,7 @@ function graphs()
     graph_plot();
     graph_plot_dist();
     directed_graph_plot();
+    shape_plot();
 end
 
 function line_plot()
@@ -415,4 +416,11 @@ function directed_graph_plot()
     g = digraph(s, t, weights, names, 'omitselfloops');
     figure;
     plot(g, 'EdgeLabel', g.Edges.Weight, 'Layout', 'layered');
+end
+
+function shape_plot()
+    x = randi(10, 10, 1);
+    y = randi(10, 10, 1);
+    figure;
+    fill(x, y, 'y');
 end
