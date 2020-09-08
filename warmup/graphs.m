@@ -10,6 +10,7 @@ function graphs()
     logspace_plot();
     semilogy_plot();
     vertical_bar_plot();
+    vertical_stack_bar_plot();
 end
 
 function line_plot()
@@ -154,6 +155,17 @@ function vertical_bar_plot()
     figure;
     bar(1 : 10, [a' b' c'], 1);
     axis([0 11 0 10]);
+    legend('Unimportant', 'Nope', 'Whatever', 'Location', 'best');
+end
+
+function vertical_stack_bar_plot()
+    a = randi(10, 1, 10)';
+    b = randi(10, 1, 10)';
+    c = randi(10, 1, 10)';
+    figure;
+    disp(c);
+    bar(1 : 10, [a b c], 0.5, 'stacked');
+    axis([0 11 0 40]);
     legend('Unimportant', 'Nope', 'Whatever', 'Location', 'best');
 end
 
