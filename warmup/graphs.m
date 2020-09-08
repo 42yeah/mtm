@@ -14,6 +14,8 @@ function graphs()
     horizontal_bar_plot();
     datetime_bar_plot();
     bar_plot_3d();
+    histogram_plot();
+    bivariate_histogram_plot();
 end
 
 function line_plot()
@@ -195,3 +197,22 @@ function bar_plot_3d()
     bar3(z);
     axis([0, 4, 0, 11, 0, 11]);
 end
+
+function histogram_plot()
+    rv = floor((rand(10, 100, 3) .^ 2.0) .* 10.0);
+    figure;
+    h1 = histogram(rv(:, 1));
+    hold on;
+    histogram(rv(:, 2), h1.BinEdges);
+    histogram(rv(:, 3), h1.BinEdges);
+    hold off;
+    legend('A', 'B', 'C');
+end
+
+function bivariate_histogram_plot()
+    x = randn(10000, 1);
+    y = randn(10000, 1);
+    figure;
+    histogram2(x, y);
+end
+
