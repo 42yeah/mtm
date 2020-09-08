@@ -32,6 +32,7 @@ function graphs()
     polar_scatter_plot();
     vanilla_scatter_plot();
     vanilla_scatter_plot_3d();
+    stem_plot();
 end
 
 function line_plot()
@@ -343,3 +344,9 @@ function vanilla_scatter_plot_3d()
     colorbar('Location', 'eastoutside', 'YTickLabel', {'super low'; 'quite low'; 'low'; 'low-mid'; 'mid'; 'mid-hi'; 'little hi'; 'way hi'; 'quite hi'});
 end
 
+function stem_plot()
+    x = 0.0 : 0.1 : 2.0 * pi;
+    y = sin(x);
+    figure;
+    stem(x, y, 'filled', 'b');
+end
