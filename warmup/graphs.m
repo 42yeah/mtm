@@ -8,6 +8,7 @@ function graphs()
     line_plot_3d();
     function_plot_3d();
     logspace_plot();
+    semilogy_plot();
 end
 
 function line_plot()
@@ -129,4 +130,18 @@ function logspace_plot()
     end
     axis([0.1 10 0.01 100]);
     title('Fancy graphs');
+end
+
+function semilogy_plot()
+    eb = 0 : 5;
+    ser = [0.1447 0.1112 0.0722 0.0438 0.0243 0.0122];
+    ber = [0.0753 0.0574 0.0370 0.0222 0.0122 0.0061];
+    figure;
+    semilogy(eb, ser, 'bo-');
+    hold on;
+    semilogy(eb, ber, 'r^-');
+    title('Performance of Baseband QPSK');
+    xlabel('EbNo (db)');
+    ylabel('SER and BER');
+    legend('SER', 'BER', 'Location', 'best');
 end
