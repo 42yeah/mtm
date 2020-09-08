@@ -16,6 +16,7 @@ function graphs()
     bar_plot_3d();
     histogram_plot();
     bivariate_histogram_plot();
+    categorical_histogram_plot();
 end
 
 function line_plot()
@@ -216,3 +217,9 @@ function bivariate_histogram_plot()
     histogram2(x, y);
 end
 
+function categorical_histogram_plot()
+    rv = randi(4, 100, 1);
+    rv = categorical(rv, [1 2 3 4], {'Poor', 'Fair', 'Good', 'Excellent'});
+    figure;
+    histogram(rv);
+end
