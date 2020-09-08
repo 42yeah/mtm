@@ -34,6 +34,9 @@ function graphs()
     vanilla_scatter_plot_3d();
     stem_plot();
     stem_plot_2();
+    stairstep_plot();
+    graph_plot();
+    graph_plot_dist();
 end
 
 function line_plot()
@@ -370,4 +373,36 @@ function stem_plot_2()
     stem(x, y1, 'filled', 'b');
     hold on;
     stem(x - 0.1, y2, 'filled', 'r');
+end
+
+function stairstep_plot()
+    x = (0.0 : 0.1 : 2.0 * pi)';
+    y = [sin(x) * 20.0, 0.2 * cos(x) + tan(x)];
+    figure;
+    stairs(y);
+end
+
+function graph_plot()
+    [b, v] = bucky;
+    h = sparse(60, 60);
+    k = 31 : 60;
+    h(k, k) = b(k, k);
+    figure;
+    gplot(b - h, v, 'b-');
+    hold on;
+    gplot(h, v, 'r-');
+    axis off equal;
+end
+
+function graph_plot_dist()
+    locs = {'alpha', 'beta', 'gamma', 'delta'};
+    g = graph(triu(magic(4)), locs, 'upper', 'omitselfloops');
+    disp(g);
+    figure;
+    p = plot(g, 'EdgeLabel', g.Edges.Weight);
+    labels = strcat(num2str((1 : 4)'), ': ', locs');
+    xl = xlim;
+    yl = ylim;
+    t = text(xl(1), yl(1), labels, 'VerticalAlignment', 'top');
+    t.Position(2) = yl(1) + t.Extent(4);
 end

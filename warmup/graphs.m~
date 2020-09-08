@@ -33,6 +33,10 @@ function graphs()
     vanilla_scatter_plot();
     vanilla_scatter_plot_3d();
     stem_plot();
+    stem_plot_2();
+    stairstep_plot();
+    graph_plot();
+    graph_plot_dist();
 end
 
 function line_plot()
@@ -345,9 +349,55 @@ function vanilla_scatter_plot_3d()
 end
 
 function stem_plot()
-    x = 0.0 : 0.1 : 5.0 * pi;
-    rv = randn(l) * 0.3;
+    x = 0.0 : 0.1 : 2.0 * pi;
+    rv = randn(length(x), 1) * 0.5;
     y = sin(x);
+    for i = 1 : length(x)
+        y(i) = y(i) + rv(i);
+    end
     figure;
     stem(x, y, 'filled', 'b');
+end
+
+function stem_plot_2()
+    x = 0.0 : 0.2 : 2.0 * pi;
+    rv1 = randn(length(x), 1) * 0.5;
+    rv2 = randn(length(x), 1) * 0.5;
+    y1 = sin(x);
+    y2 = cos(x);
+    for i = 1 : length(x)
+        y1(i) = y1(i) + rv1(i);
+        y2(i) = y2(i) + rv2(i);
+    end
+    figure;
+    stem(x, y1, 'filled', 'b');
+    hold on;
+    stem(x - 0.1, y2, 'filled', 'r');
+end
+
+function stairstep_plot()
+    x = (0.0 : 0.1 : 2.0 * pi)';
+    y = [sin(x) * 20.0, 0.2 * cos(x) + tan(x)];
+    figure;
+    stairs(y);
+end
+
+function graph_plot()
+    [b, v] = bucky;
+    h = sparse(60, 60);
+    k = 31 : 60;
+    h(k, k) = b(k, k);
+    figure;
+    gplot(b - h, v, 'b-');
+    hold on;
+    gplot(h, v, 'r-');
+    axis off equal;
+end
+
+function graph_plot_dist()
+    g = graph(triu(magic(4)), {'alpha', 'beta', 'gamma', 'delta'}, 'upper', 'omitselfloops');
+    disp(g);
+    figure;
+    p = plot(g, 'EdgeLabel', g.Edges.Weight);
+    labels = strcat(num2str(
 end
