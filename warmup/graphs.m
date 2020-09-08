@@ -24,6 +24,8 @@ function graphs()
     area_plot();
     contour_plot();
     function_contour_plot();
+    polar_plot();
+    easy_polar_plot();
 end
 
 function line_plot()
@@ -279,4 +281,17 @@ end
 function function_contour_plot()
     figure;
     fcontour(@(x, y) sin(3.0 * x) .* cos(x + y), [0 3 0 3], 'Fill', 'on', 'LineColor', 'k');
+end
+
+function polar_plot()
+    t = 0 : 0.01 : 2.0 * pi;
+    r = abs(sin(2.0 * t) .* cos(2.0 * t));
+    figure;
+    polarplot(t, r);
+    title('Polar plot');
+end
+
+function easy_polar_plot()
+    figure;
+    ezpolar('1.0 + cos(t) * sin(t) ^ 2.0');
 end
