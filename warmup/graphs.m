@@ -43,6 +43,9 @@ function graphs()
     dual_y_plot();
     dual_y_plot_2();
     ribbon_plot();
+    surface_plot();
+    pottery_plot();
+    surface_contour_plot();
 end
 
 function line_plot()
@@ -471,5 +474,29 @@ function ribbon_plot()
 end
 
 function surface_plot()
-    
+    points = linspace(-2, 2, 40);
+    [x, y] = meshgrid(points, points);
+    z = x .^ 2 - (3.0 * y .^ 2.0 - 2.0 * y .^ 3.0);
+    figure;
+    surf(x, y, z);
+end
+
+function pottery_plot()
+    t = 0 : pi / 50.0 : 2.0 * pi;
+    [x, y, z] = cylinder(2 + sin(t));
+    figure;
+    surf(x, y, z, 'LineStyle', 'none', 'FaceColor', 'interp');
+    colormap('summer');
+    axis square;
+    axis off;
+    grid off;
+end
+
+function surface_contour_plot()
+    y = -10 : 0.5 : 10;
+    x = -10 : 0.5 : 10;
+    [X, Y] = meshgrid(x, y);
+    Z = sin(sqrt(X .^ 2.0 + Y .^ 2.0)) ./ sqrt(X .^ 2.0 + Y .^ 2.0);
+    figure;
+    surfc(X, Y, Z);
 end
