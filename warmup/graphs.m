@@ -1,0 +1,132 @@
+function graphs()
+    line_plot();
+    stock_plot();
+    scatter_plot();
+    datetime_plot();
+    implicit_function_plot();
+    function_plot();
+    line_plot_3d();
+    function_plot_3d();
+    logspace_plot();
+end
+
+function line_plot()
+    x = 0.0 : 0.1 : 2.0 * pi;
+    y1 = cos(x);
+    y2 = sin(x);
+    
+    figure;
+    plot(x, y1, 'b', x, y2, 'r-.', 'LineWidth', 2);
+    grid on;
+    axis([0 2.0 * pi -1.5 1.5]);
+    title('Trigonometric Functions');
+    xlabel('angle');
+    ylabel('sin(x) & cos(x)');
+end
+
+function stock_plot()
+    t1 = datetime(2018, 1, 1, 8, 0, 0);
+    t2 = datetime(2020, 1, 1, 8, 0, 0);
+    t = t1 : t2;
+    rd = rand(length(t), 2) .* 100.0;
+    series = [{'随便'}, {'不知道'}];
+    
+    figure;
+    plot(t, rd);
+    datetick('x');
+    xlabel('Date');
+    ylabel('Index Value');
+    title('Relative Daily Index Closings');
+    legend(series, 'Location', 'northwest');
+end
+
+function scatter_plot()
+    x = 0.0 : 0.1 : 2.0 * pi;
+    y1 = sin(x) + rand() * 2.0;
+    y2 = cos(x) + rand() * 2.0;
+    figure;
+    plot(x, y1, 'bo');
+    hold on;
+    plot(x, y2, 'r+');
+    axis([0 2.0 * pi -5.0 5.0]);
+    title('RV plot');
+    xlabel('It doesn''t matter');
+    ylabel('I dunno');
+    series = [{'dunno'}, {'doesn''t matter'}];
+    legend(series, 'Location', 'northeast');
+end
+
+function datetime_plot()
+    t1 = datetime(2020, 7, 2, 8, 0, 0);
+    t2 = datetime(2020, 9, 5, 8, 0, 0);
+    t = t1 : t2;
+    rd1 = sin(datenum(t)) + rand() * 2.0;
+    figure;
+    plot(t, rd1);
+    limits = [t1, t2];
+    xlim(limits);
+    ax = gca;
+    ax.XAxis.TickLabelFormat = 'MMMM dd';
+    ax.XAxis.TickLabelRotation = 40;
+    xlabel('date');
+    ylabel('dunno');
+    title('Random Heat Map');
+end
+
+function implicit_function_plot()
+    figure;
+    fimplicit(@(x, y) (x .^ 2.0 + y .^ 2.0) .^ 2.0 - x .^ 2.0 + y .^ 2.0, [-1.1 1.1 -1.1 1.1]);
+    colormap([0 0 1]);
+    title('Lemniscate Function');
+end
+
+function function_plot()
+    figure;
+    fplot(@(x) x .^ 2 .* (3.0 - 2.0 .* x), [-1.0 1.0], 'r', 'LineWidth', 2);
+    xlabel('x');
+    ylabel('y');
+    title('Smoothstep Function');
+end
+
+function line_plot_3d()
+    x = 0.0 : 0.1 : 2.0 * pi;
+    y = [
+        x;
+        1.5 * x;
+        2.0 * x;
+        2.5 * x;
+        3.0 * x;
+        3.5 * x;
+        4.0 * x;
+    ];
+    z = sin(x) + cos(y);
+    figure;
+    plot3(x, y, z);
+    box on;
+    axis([0.0 2.0 * pi 0.0 2.0 * pi -10.0 10.0]);
+end
+
+function function_plot_3d()
+    figure;
+    fplot3(@cos, @sin, @(t) sin(5.0 * t), [-pi, pi]);
+    xlabel('x');
+    ylabel('y');
+    zlabel('z');
+    title('Rotation thing yay');
+end
+
+function logspace_plot()
+    zeta = [0.01 0.02 0.05 0.1 0.2 0.5 1.0];
+    colors = ['r' 'g' 'b' 'c' 'm' 'y' 'k'];
+    w = logspace(-1, 1, 1000);
+    figure;    
+    for i = 1 : 7
+        a = w .^ 2.0 - 1.0;
+        b = 2.0 * w * zeta(i);
+        gain = sqrt(1.0 ./ (a .^ 2.0 + b .^ 2.0));
+        loglog(w, gain, 'Color', colors(i), 'LineWidth', 2);
+        hold on;
+    end
+    axis([0.1 10 0.01 100]);
+    title('Fancy graphs');
+end
