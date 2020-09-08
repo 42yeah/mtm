@@ -9,6 +9,7 @@ function graphs()
     function_plot_3d();
     logspace_plot();
     semilogy_plot();
+    vertical_bar_plot();
 end
 
 function line_plot()
@@ -145,3 +146,14 @@ function semilogy_plot()
     ylabel('SER and BER');
     legend('SER', 'BER', 'Location', 'best');
 end
+
+function vertical_bar_plot()
+    a = randi(10, 1, 10);
+    b = randi(10, 1, 10);
+    c = randi(10, 1, 10);
+    figure;
+    bar(1 : 10, [a' b' c'], 1);
+    axis([0 11 0 10]);
+    legend('Unimportant', 'Nope', 'Whatever', 'Location', 'best');
+end
+
