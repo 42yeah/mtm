@@ -39,6 +39,7 @@ function graphs()
     graph_plot_dist();
     directed_graph_plot();
     shape_plot();
+    errorbar_plot();
 end
 
 function line_plot()
@@ -423,4 +424,11 @@ function shape_plot()
     y = randi(10, 10, 1);
     figure;
     fill(x, y, 'y');
+end
+
+function errorbar_plot()
+    rv = randi(100, 10, 2);
+    err = randi(10, 10, 2);
+    figure;
+    errorbar(rv, err, 'LineWidth', 2);
 end

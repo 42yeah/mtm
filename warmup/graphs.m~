@@ -37,6 +37,9 @@ function graphs()
     stairstep_plot();
     graph_plot();
     graph_plot_dist();
+    directed_graph_plot();
+    shape_plot();
+    errorbar_plot();
 end
 
 function line_plot()
@@ -395,9 +398,37 @@ function graph_plot()
 end
 
 function graph_plot_dist()
-    g = graph(triu(magic(4)), {'alpha', 'beta', 'gamma', 'delta'}, 'upper', 'omitselfloops');
-    disp(g);
+    locs = {'alpha', 'beta', 'gamma', 'delta'};
+    g = graph(triu(magic(4)), locs, 'upper', 'omitselfloops');
     figure;
     p = plot(g, 'EdgeLabel', g.Edges.Weight);
-    labels = strcat(num2str(
+    labels = strcat(num2str((1 : 4)'), ': ', locs');
+    xl = xlim;
+    yl = ylim;
+    t = text(xl(1), yl(1), labels, 'VerticalAlignment', 'top');
+    t.Position(2) = yl(1) + t.Extent(4);
+end
+
+function directed_graph_plot()
+    s = randi(10, 10, 1); % start
+    t = randi(10, 10, 1); % terminal
+    weights = randi(10, 10, 1);
+    names = {'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa'};
+    g = digraph(s, t, weights, names, 'omitselfloops');
+    figure;
+    plot(g, 'EdgeLabel', g.Edges.Weight, 'Layout', 'layered');
+end
+
+function shape_plot()
+    x = randi(10, 10, 1);
+    y = randi(10, 10, 1);
+    figure;
+    fill(x, y, 'y');
+end
+
+function errorbar_plot()
+    rv = randi(100, 10, 6);
+    err = randi(10, 10, 6);
+    figure;
+    errorbar(rv, err);
 end
