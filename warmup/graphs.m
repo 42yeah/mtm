@@ -21,6 +21,7 @@ function graphs()
     pie_plot();
     pie_plot_explode();
     pie_plot_3d();
+    area_plot();
 end
 
 function line_plot()
@@ -256,3 +257,11 @@ function pie_plot_3d()
     pie3(rv, exp, {'First'; 'Second'; 'Third'; 'Forth'; 'Fifth'});
 end
 
+function area_plot()
+    x = 0.0 : 0.5 : 2.0 * pi;
+    y = randn(length(x), 4);
+    base_value = -1;
+    figure;
+    colormap winter;
+    area(y, base_value);
+end
