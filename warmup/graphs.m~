@@ -1,4 +1,5 @@
 function graphs()
+    close all;
     line_plot();
     stock_plot();
     scatter_plot();
@@ -23,6 +24,15 @@ function graphs()
     pie_plot_3d();
     area_plot();
     contour_plot();
+    function_contour_plot();
+    polar_plot();
+    easy_polar_plot();
+    rose_plot();
+    polar_histogram_plot();
+    polar_scatter_plot();
+    vanilla_scatter_plot();
+    vanilla_scatter_plot_3d();
+    stem_plot();
 end
 
 function line_plot()
@@ -277,5 +287,67 @@ end
 
 function function_contour_plot()
     figure;
-    fcontour(@(x, y) sin(3.0 * x) .* cos(x + y), [0 3 0 3], 'Fill', 'on', 'Ln
+    fcontour(@(x, y) sin(3.0 * x) .* cos(x + y), [0 3 0 3], 'Fill', 'on', 'LineColor', 'k');
+end
+
+function polar_plot()
+    t = 0 : 0.01 : 2.0 * pi;
+    r = abs(sin(2.0 * t) .* cos(2.0 * t));
+    figure;
+    polarplot(t, r);
+    title('Polar plot');
+end
+
+function easy_polar_plot()
+    figure;
+    ezpolar('1.0 + cos(t) * sin(t) ^ 2.0');
+end
+
+function rose_plot()
+    rv = randn(100, 1);
+    figure;
+    rose(rv, 10);
+end
+
+function polar_histogram_plot()
+    rv = randn(100, 1);
+    figure;
+    polarhistogram(rv, 10);
+end
+
+function polar_scatter_plot()
+    t = 0.0 : 0.1 : 2.0 * pi;
+    rv = randn(length(t), 1);
+    sz = 30 * randi(20, length(t), 1);
+    color = randi(3, length(t), 1);
+    figure;
+    polarscatter(t, rv, sz, color, 'filled', 'MarkerFaceAlpha', 0.5);
+    set(gca, 'Color', [0.7, 0.7, 0.7]);
+end
+
+function vanilla_scatter_plot()
+    x = randn(100, 1);
+    y = randn(100, 1);
+    z = randi(5, 100, 1);
+    figure;
+    scatter(x, y, 30, z);
+    set(gca, 'Color', [0.0, 0.0, 0.0]);
+end
+
+function vanilla_scatter_plot_3d()
+    z = linspace(0.0, 4.0 * pi, 250);
+    x = 2.0 * cos(z) + rand(1, 250);
+    y = 2.0 * sin(z) + rand(1, 250);
+    c = round(z / 3);
+    figure;
+    scatter3(x, y, z, 30, c, 'filled');
+    colorbar('Location', 'eastoutside', 'YTickLabel', {'super low'; 'quite low'; 'low'; 'low-mid'; 'mid'; 'mid-hi'; 'little hi'; 'way hi'; 'quite hi'});
+end
+
+function stem_plot()
+    x = 0.0 : 0.1 : 5.0 * pi;
+    rv = randn(l) * 0.3;
+    y = sin(x);
+    figure;
+    stem(x, y, 'filled', 'b');
 end

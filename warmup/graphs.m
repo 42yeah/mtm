@@ -33,6 +33,7 @@ function graphs()
     vanilla_scatter_plot();
     vanilla_scatter_plot_3d();
     stem_plot();
+    stem_plot_2();
 end
 
 function line_plot()
@@ -346,7 +347,27 @@ end
 
 function stem_plot()
     x = 0.0 : 0.1 : 2.0 * pi;
+    rv = randn(length(x), 1) * 0.5;
     y = sin(x);
+    for i = 1 : length(x)
+        y(i) = y(i) + rv(i);
+    end
     figure;
     stem(x, y, 'filled', 'b');
+end
+
+function stem_plot_2()
+    x = 0.0 : 0.2 : 2.0 * pi;
+    rv1 = randn(length(x), 1) * 0.5;
+    rv2 = randn(length(x), 1) * 0.5;
+    y1 = sin(x);
+    y2 = cos(x);
+    for i = 1 : length(x)
+        y1(i) = y1(i) + rv1(i);
+        y2(i) = y2(i) + rv2(i);
+    end
+    figure;
+    stem(x, y1, 'filled', 'b');
+    hold on;
+    stem(x - 0.1, y2, 'filled', 'r');
 end
