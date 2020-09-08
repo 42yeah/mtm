@@ -1,4 +1,5 @@
 function graphs()
+    close all;
     line_plot();
     stock_plot();
     scatter_plot();
@@ -26,6 +27,8 @@ function graphs()
     function_contour_plot();
     polar_plot();
     easy_polar_plot();
+    rose_plot();
+    polar_histogram_plot();
 end
 
 function line_plot()
@@ -294,4 +297,16 @@ end
 function easy_polar_plot()
     figure;
     ezpolar('1.0 + cos(t) * sin(t) ^ 2.0');
+end
+
+function rose_plot()
+    rv = randn(100, 1);
+    figure;
+    rose(rv, 10);
+end
+
+function polar_histogram_plot()
+    rv = randn(100, 1);
+    figure;
+    polarhistogram(rv, 10);
 end
