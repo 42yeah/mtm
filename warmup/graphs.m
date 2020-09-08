@@ -22,6 +22,7 @@ function graphs()
     pie_plot_explode();
     pie_plot_3d();
     area_plot();
+    contour_plot();
 end
 
 function line_plot()
@@ -264,4 +265,12 @@ function area_plot()
     figure;
     colormap winter;
     area(y, base_value);
+end
+
+function contour_plot()
+    lon = 0 : 0.1 : 3.0;
+    lat = 0 : 0.1 : 3.0;
+    elev = rand(length(lon), length(lat)) .* 34.0;
+    figure;
+    contour(lon, lat, elev);
 end
