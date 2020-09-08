@@ -40,6 +40,9 @@ function graphs()
     directed_graph_plot();
     shape_plot();
     errorbar_plot();
+    dual_y_plot();
+    dual_y_plot_2();
+    ribbon_plot();
 end
 
 function line_plot()
@@ -431,4 +434,42 @@ function errorbar_plot()
     err = randi(10, 10, 2);
     figure;
     errorbar(rv, err, 'LineWidth', 2);
+end
+
+function dual_y_plot()
+    x = 0 : 0.01 : 20;
+    y1 = 200 * exp(-0.05 * x) .* sin(x);
+    y2 = 0.8 * exp(-0.5 * x) .* sin(10.0 * x);
+    figure;
+    yyaxis left;
+    plot(x, y1);
+    ylabel('Low freq');
+    yyaxis right;
+    plot(x, y2);
+    ylabel('Hi freq');
+end
+
+function dual_y_plot_2()
+    x = 0 : 0.01 : 20;
+    x2 = 0 : 1 : 20;
+    y1 = 200 * exp(-0.05 * x) .* sin(x);
+    y2 = 0.8 * exp(-0.5 * x2) .* sin(10.0 * x2);
+    figure;
+    yyaxis left;
+    plot(x, y1);
+    ylabel('Bar-able');
+    yyaxis right;
+    bar(x2, y2);
+    ylabel('Huh');
+end
+
+function ribbon_plot()
+    [x, y] = meshgrid(-2 : 0.2 : 2, -2 : 0.2 : 2);
+    r = (1 ./ (x .^ 2 + (y - 1) .^ 2) .^ (1 / 2)) - (1 ./ (x .^ 2 + (y + 1) .^ 2) .^ (1 / 2));
+    figure;
+    ribbon(r);
+end
+
+function surface_plot()
+    
 end
