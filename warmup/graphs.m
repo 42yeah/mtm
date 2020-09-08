@@ -11,6 +11,9 @@ function graphs()
     semilogy_plot();
     vertical_bar_plot();
     vertical_stack_bar_plot();
+    horizontal_bar_plot();
+    datetime_bar_plot();
+    bar_plot_3d();
 end
 
 function line_plot()
@@ -163,9 +166,32 @@ function vertical_stack_bar_plot()
     b = randi(10, 1, 10)';
     c = randi(10, 1, 10)';
     figure;
-    disp(c);
     bar(1 : 10, [a b c], 0.5, 'stacked');
     axis([0 11 0 40]);
     legend('Unimportant', 'Nope', 'Whatever', 'Location', 'best');
 end
 
+function horizontal_bar_plot()
+    a = randi(10, 10, 1);
+    figure;
+    barh(1 : 10, a, 0.9);
+    axis([0 10 0 11]);
+end
+
+% So it looks like datetick is not needed here?
+function datetime_bar_plot()
+    t1 = datetime(2020, 8, 1);
+    t2 = datetime(2020, 9, 5);
+    t = t1 : t2;
+    a = randi(100, length(t), 1);
+    bar(t, a);
+    xlabel('Date');
+    ylabel('Dunno');
+end
+
+function bar_plot_3d()
+    z = randi(10, 10, 3);
+    figure;
+    bar3(z);
+    axis([0, 4, 0, 11, 0, 11]);
+end

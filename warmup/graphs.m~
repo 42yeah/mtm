@@ -9,6 +9,9 @@ function graphs()
     function_plot_3d();
     logspace_plot();
     semilogy_plot();
+    vertical_bar_plot();
+    vertical_stack_bar_plot();
+    horizontal_bar_plot();
 end
 
 function line_plot()
@@ -147,12 +150,37 @@ function semilogy_plot()
 end
 
 function vertical_bar_plot()
-    a = randi(10, 10);
-    b = randi(10, 10);
-    c = randi(10, 10);
-    figrue;
-    bar(1 : 10, [a' b' c], 1);
-    axis([0 10 10]);
-    legend('Unimportant', 'Nope', 'Whateve
+    a = randi(10, 1, 10);
+    b = randi(10, 1, 10);
+    c = randi(10, 1, 10);
+    figure;
+    bar(1 : 10, [a' b' c'], 1);
+    axis([0 11 0 10]);
+    legend('Unimportant', 'Nope', 'Whatever', 'Location', 'best');
 end
 
+function vertical_stack_bar_plot()
+    a = randi(10, 1, 10)';
+    b = randi(10, 1, 10)';
+    c = randi(10, 1, 10)';
+    figure;
+    disp(c);
+    bar(1 : 10, [a b c], 0.5, 'stacked');
+    axis([0 11 0 40]);
+    legend('Unimportant', 'Nope', 'Whatever', 'Location', 'best');
+end
+
+function horizontal_bar_plot()
+    a = randi(10, 10, 1);
+    figure;
+    barh(1 : 10, a, 0.9);
+    axis([0 10 0 11]);
+end
+
+function datetime_bar_plot()
+    t1 = datetime(2020, 8, 1);
+    t2 = datetime(2020, 9, 5);
+    t = t1 : t2;
+    a = randi(100, length(t), 1);
+    bar(t, a)
+end
