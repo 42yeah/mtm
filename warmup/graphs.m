@@ -17,6 +17,7 @@ function graphs()
     histogram_plot();
     bivariate_histogram_plot();
     categorical_histogram_plot();
+    heatmap_plot();
 end
 
 function line_plot()
@@ -222,4 +223,12 @@ function categorical_histogram_plot()
     rv = categorical(rv, [1 2 3 4], {'Poor', 'Fair', 'Good', 'Excellent'});
     figure;
     histogram(rv);
+end
+
+function heatmap_plot()
+    names = {'hello'; 'goodbye'; 'whatever'; 'random'};
+    age = randi(10, length(names), 1);
+    t = table(names, age);
+    disp(t);
+    heatmap(t, 'names', 'age');
 end
