@@ -29,6 +29,8 @@ function graphs()
     easy_polar_plot();
     rose_plot();
     polar_histogram_plot();
+    polar_scatter_plot();
+    vanilla_scatter_plot();
 end
 
 function line_plot()
@@ -309,4 +311,23 @@ function polar_histogram_plot()
     rv = randn(100, 1);
     figure;
     polarhistogram(rv, 10);
+end
+
+function polar_scatter_plot()
+    t = 0.0 : 0.1 : 2.0 * pi;
+    rv = randn(length(t), 1);
+    sz = 30 * randi(20, length(t), 1);
+    color = randi(3, length(t), 1);
+    figure;
+    polarscatter(t, rv, sz, color, 'filled', 'MarkerFaceAlpha', 0.5);
+    set(gca, 'Color', [0.7, 0.7, 0.7]);
+end
+
+function vanilla_scatter_plot()
+    x = randn(100, 1);
+    y = randn(100, 1);
+    z = randi(5, 100, 1);
+    figure;
+    scatter(x, y, 30, z);
+    set(gca, 'Color', [0.0, 0.0, 0.0]);
 end
