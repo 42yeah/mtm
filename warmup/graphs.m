@@ -31,6 +31,7 @@ function graphs()
     polar_histogram_plot();
     polar_scatter_plot();
     vanilla_scatter_plot();
+    vanilla_scatter_plot_3d();
 end
 
 function line_plot()
@@ -331,3 +332,14 @@ function vanilla_scatter_plot()
     scatter(x, y, 30, z);
     set(gca, 'Color', [0.0, 0.0, 0.0]);
 end
+
+function vanilla_scatter_plot_3d()
+    z = linspace(0.0, 4.0 * pi, 250);
+    x = 2.0 * cos(z) + rand(1, 250);
+    y = 2.0 * sin(z) + rand(1, 250);
+    c = round(z / 3);
+    figure;
+    scatter3(x, y, z, 30, c, 'filled');
+    colorbar('Location', 'eastoutside', 'YTickLabel', {'super low'; 'quite low'; 'low'; 'low-mid'; 'mid'; 'mid-hi'; 'little hi'; 'way hi'; 'quite hi'});
+end
+
