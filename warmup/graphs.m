@@ -23,6 +23,7 @@ function graphs()
     pie_plot_3d();
     area_plot();
     contour_plot();
+    function_contour_plot();
 end
 
 function line_plot()
@@ -273,4 +274,9 @@ function contour_plot()
     elev = rand(length(lon), length(lat)) .* 34.0;
     figure;
     contour(lon, lat, elev);
+end
+
+function function_contour_plot()
+    figure;
+    fcontour(@(x, y) sin(3.0 * x) .* cos(x + y), [0 3 0 3], 'Fill', 'on', 'LineColor', 'k');
 end

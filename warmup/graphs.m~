@@ -12,6 +12,17 @@ function graphs()
     vertical_bar_plot();
     vertical_stack_bar_plot();
     horizontal_bar_plot();
+    datetime_bar_plot();
+    bar_plot_3d();
+    histogram_plot();
+    bivariate_histogram_plot();
+    categorical_histogram_plot();
+    heatmap_plot();
+    pie_plot();
+    pie_plot_explode();
+    pie_plot_3d();
+    area_plot();
+    contour_plot();
 end
 
 function line_plot()
@@ -164,7 +175,6 @@ function vertical_stack_bar_plot()
     b = randi(10, 1, 10)';
     c = randi(10, 1, 10)';
     figure;
-    disp(c);
     bar(1 : 10, [a b c], 0.5, 'stacked');
     axis([0 11 0 40]);
     legend('Unimportant', 'Nope', 'Whatever', 'Location', 'best');
@@ -177,10 +187,95 @@ function horizontal_bar_plot()
     axis([0 10 0 11]);
 end
 
+% So it looks like datetick is not needed here?
 function datetime_bar_plot()
     t1 = datetime(2020, 8, 1);
     t2 = datetime(2020, 9, 5);
     t = t1 : t2;
     a = randi(100, length(t), 1);
-    bar(t, a)
+    bar(t, a);
+    xlabel('Date');
+    ylabel('Dunno');
+end
+
+function bar_plot_3d()
+    z = randi(10, 10, 3);
+    figure;
+    bar3(z);
+    axis([0, 4, 0, 11, 0, 11]);
+end
+
+function histogram_plot()
+    rv = floor((rand(10, 100, 3) .^ 2.0) .* 10.0);
+    figure;
+    h1 = histogram(rv(:, 1));
+    hold on;
+    histogram(rv(:, 2), h1.BinEdges);
+    histogram(rv(:, 3), h1.BinEdges);
+    hold off;
+    legend('A', 'B', 'C');
+end
+
+function bivariate_histogram_plot()
+    x = randn(10000, 1);
+    y = randn(10000, 1);
+    figure;
+    histogram2(x, y);
+end
+
+function categorical_histogram_plot()
+    rv = randi(4, 100, 1);
+    rv = categorical(rv, [1 2 3 4], {'Poor', 'Fair', 'Good', 'Excellent'});
+    figure;
+    histogram(rv);
+end
+
+function heatmap_plot()
+    names = {'hello'; 'goodbye'; 'whatever'; 'random'};
+    age = randi(10, length(names), 1);
+    t = table(names, age);
+    figure;
+    heatmap(t, 'names', 'age');
+end
+
+function pie_plot()
+    rv = randi(100, 5, 1);
+    figure;
+    pie(rv, {'First'; 'Second'; 'Third'; 'Forth'; 'Fifth'});
+end
+
+function pie_plot_explode()
+    rv = randi(100, 5, 1);
+    exp = randi(1, 5, 1);
+    figure;
+    pie(rv, exp, {'First'; 'Second'; 'Third'; 'Forth'; 'Fifth'});
+end
+
+function pie_plot_3d()
+    rv = randi(100, 5, 1);
+    exp = randi(1, 5, 1);
+    figure;
+    pie3(rv, exp, {'First'; 'Second'; 'Third'; 'Forth'; 'Fifth'});
+end
+
+function area_plot()
+    x = 0.0 : 0.5 : 2.0 * pi;
+    y = randn(length(x), 4);
+    base_value = -1;
+    figure;
+    colormap winter;
+    area(y, base_value);
+end
+
+function contour_plot()
+    lon = 0 : 0.1 : 3.0;
+    lat = 0 : 0.1 : 3.0;
+    elev = rand(length(lon), length(lat)) .* 34.0;
+    figure;
+    contour(lon, lat, elev);
+end
+
+function function_contour_plot()
+    figure;
+    fcontour(@(x, y) sin(3.0 * x) .* cos(x + y), [0 3 0 3], 'Fill', 'on', 'Ln
 end
