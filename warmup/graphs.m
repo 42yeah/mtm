@@ -37,6 +37,7 @@ function graphs()
     stairstep_plot();
     graph_plot();
     graph_plot_dist();
+    directed_graph_plot();
 end
 
 function line_plot()
@@ -397,7 +398,6 @@ end
 function graph_plot_dist()
     locs = {'alpha', 'beta', 'gamma', 'delta'};
     g = graph(triu(magic(4)), locs, 'upper', 'omitselfloops');
-    disp(g);
     figure;
     p = plot(g, 'EdgeLabel', g.Edges.Weight);
     labels = strcat(num2str((1 : 4)'), ': ', locs');
@@ -405,4 +405,14 @@ function graph_plot_dist()
     yl = ylim;
     t = text(xl(1), yl(1), labels, 'VerticalAlignment', 'top');
     t.Position(2) = yl(1) + t.Extent(4);
+end
+
+function directed_graph_plot()
+    s = randi(10, 10, 1); % start
+    t = randi(10, 10, 1); % terminal
+    weights = randi(10, 10, 1);
+    names = {'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa'};
+    g = digraph(s, t, weights, names, 'omitselfloops');
+    figure;
+    plot(g, 'EdgeLabel', g.Edges.Weight, 'Layout', 'layered');
 end
