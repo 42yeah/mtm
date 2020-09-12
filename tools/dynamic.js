@@ -9,8 +9,17 @@ function player() {
         position: pos(0, 0),
         food: 0,
         water: 0,
-        total: 0
+        money: 10000,
+        thought: "",
+        action: null,
+        day: 0,
+        disqualified: false,
+        finished: false
     };
+}
+
+function isOverweight(player) {
+    return (player.food * 2 + player.water * 3) > 1200;
 }
 
 function mapPos(pos) {
@@ -35,6 +44,7 @@ function getNeighbors(chunk) {
 }
 
 function renewMap() {
+    map = [];
     for (let y = 0; y < 5; y++) {
         map.push([]);
         for (let x = 0; x < 5; x++) {
@@ -101,8 +111,244 @@ function pathfind(s, t) {
     return path;
 }
 
+let weatherBar = [0.4835, 0.4835, 0.033];
+let costMap = {
+    food: [3, 9, 10],
+    water: [4, 9, 10]
+};
+let mean = {
+    food: Math.ceil(costMap.food[0] * weatherBar[0] + costMap.food[1] * weatherBar[1] + costMap.food[2] * weatherBar[2]),
+    water: Math.ceil(costMap.water[0] * weatherBar[0] + costMap.water[1] * weatherBar[1] + costMap.water[2] * weatherBar[2])
+};
+let price = {
+    food: 10,
+    water: 5
+};
+
+function bar(chance) {
+    for (let i = 0; i < weatherBar.length; i++) {
+        chance -= weatherBar[i];
+        if (chance < 0) {
+            return i;
+        }
+    }
+    return weatherBar[weatherBar.length - 1];
+}
+
+let wotd = 0; // Weather should be randomized at the beginning
+
+// Action is divided into two parts: type, position.
+// "dig" and "wait" doesn't need position per se, however go needs it.
+
+function meanRequirement(days) {
+    return {
+        food: Math.ceil(mean.food * days),
+        water: Math.ceil(mean.water * days)
+    };
+}
+
+function duration(path) {
+    return path ? path.length - 1 : 0;
+}
+
+function daysToLast(player) {
+    let foodDays = Math.floor(player.food / mean.food);
+    let waterDays = Math.floor(player.water / mean.water);
+    return foodDays < waterDays ? foodDays : waterDays;
+}
+
+function max(a, b) { 
+    return a > b ? a : b;
+}
+
+function min(a, b) {
+    return a < b ? a : b;
+}
+
 // Think with computer. What would an AI do?
-function think() {
+function think(player) {
+    let onShopSquare = player.day == 0 || (player.position.x == 3 && player.position.y == 2);
+    let priceMultiplier = player.day == 0 ? 1 : 2;
+    let onMineSquare = player.position.x == 2 && player.position.y == 3;
+    let pathToFin = pathfind(player.position, pos(4, 4));
+    let pathToShop = pathfind(player.position, pos(3, 2));
+    let pathToMine = pathfind(player.position, pos(2, 3));
+    let mineToShop = pathfind(pos(2, 3), pos(3, 2));
+    let spareDays = players.length;
+
+    // If the food can't last any longer, then they has to hit the shop NOW
+    if (daysToLast(player) <= duration(pathToShop) + spareDays) {
+        player.thought = "buy stuffs";
+        if (onShopSquare) {
+            if (duration(pathToMine) + spareDays >= (30 - player.day)) {
+                // There is no time to mine now. Gotta go.
+                let req = meanRequirement(duration(pathToFin) + spareDays);
+                // Perform purchase
+                let dFood = max(req.food - player.food, 0);
+                let dWater = max(req.water - player.water, 0);
+                player.food += dFood;
+                player.water += dWater;
+                player.money -= dFood * price.food * priceMultiplier + dWater * price.water * priceMultiplier;
+            } else {
+                // Hey look, we can hit the mine. Let's do it!
+                let req = meanRequirement(duration(pathToMine) + duration(mineToShop) + spareDays);
+                let dFood = max(req.food - player.food, 0);
+                let dWater = max(req.water - player.water, 0);
+                player.food += dFood;
+                player.water += dWater;
+                player.money -= dFood * price.food * priceMultiplier + dWater * price.water * priceMultiplier;
+
+                // Now take a look at how many days we can dig
+                while (!isOverweight(player)) {
+                    player.food += mean.food;
+                    player.water += mean.water;
+                    player.money -= mean.food * price.food * priceMultiplier + mean.water * price.water * priceMultiplier;
+                }
+                // And when they are, sell a day worth of food & water
+                player.food -= mean.food;
+                player.water -= mean.water;
+                player.money += mean.food * price.food * priceMultiplier + mean.water * price.water * priceMultiplier;
+                // And when we are at the start, use food to stuff the bag
+                if (priceMultiplier == 1) {
+                    while (!isOverweight(player)) {
+                        player.food += 1;
+                        player.money -= 1 * price.food * priceMultiplier;
+                    }
+                    player.food -= 1;
+                    player.money += 1 * price.food * priceMultiplier;
+                }
+            }
+        } else {
+            // Walk towards it
+            player.action = {
+                type: "go",
+                position: pathToShop[1].position
+            };
+            return;
+        }
+    }
+    if ((30 - player.day) <= duration(pathToFin) + spareDays) {
+        // Gotta go!
+        player.action = {
+            type: "go",
+            position: pathToFin[1].position
+        };
+        player.thought = "to finish!";
+        return;
+    }
+    if (onMineSquare) {
+        player.action = {
+            type: "mine",
+            position: null
+        };
+        player.thought = "mining money";
+        return;
+    }
+    if (meanRequirement(duration(pathToMine) + duration(mineToShop) + spareDays) > daysToLast(player)) {
+        // Can't mine - need to buy more!
+        player.action = {
+            type: "go",
+            position: pathToShop[1].position
+        };
+        player.thought = "to shop";
+        return;
+    }
+    // Otherwise - to the mines!
+    player.action = {
+        type: "go",
+        position: pathToMine[1].position
+    };
+    player.thought = "to mines!";
+}
+
+function action(player) {
+    // Avoid at the same tile at all costs
+    renewMap();
+    switch (player.action.type) {
+        case "go":
+            if (mapPos(player.action.position).weight >= 50 || wotd == 2) {
+                // Just stay here; It's too much.
+                player.food -= costMap.food[wotd];
+                player.water -= costMap.water[wotd];
+            } else {
+                player.position = pos(player.action.position.x, player.action.position.y);
+                player.food -= costMap.food[wotd] * 2;
+                player.water -= costMap.water[wotd] * 2;
+            }
+            break;
+
+        case "stay":
+            player.food -= costMap.food[wotd];
+            player.water -= costMap.water[wotd];
+            break;
+
+        case "mine":
+            if (player.position.x != 2 || player.position.y != 3) {
+                console.log("ERR! The player is trying to mine while NOT being in the mine");
+                break;
+            }
+            player.food -= costMap.food[wotd] * 3;
+            player.water -= costMap.water[wotd] * 3;
+            player.money += 200;
+            break;
+    }
+    if (player.food < 0 || player.water < 0 || player.day >= 30) {
+        console.log("Player DISQUALIFIED");
+        player.disqualified = true;
+    }
+    if (player.position.x == 4 && player.position.y == 4 && !player.disqualified) {
+        console.log("Player ARRIVED");
+        player.finished = true;
+    }
+    player.day++;
 }
 
 let players = [ player(), player(), player() ];
+
+function turn() {
+    wotd = bar(Math.random());
+    for (let i = 0; i < players.length; i++) {
+        let player = players[i];
+        think(player);
+        action(player);
+        if (player.disqualified) {
+            console.log("Player", i, "is disqualified");
+            players.splice(i, 1);
+        }
+        if (player.finished) {
+            let total = player.food * price.food * 0.5 + player.water * price.water * 0.5 + player.money;
+            console.log("Player", i, "finished with $", total);
+            players.splice(i, 1);
+        }
+    }
+    let output = "";
+    for (let y = 0; y < 5; y++) {
+        for (let x = 0; x < 5; x++) {
+            let hasPlayer = false;
+            for (let i = 0; i < players.length; i++) {
+                let player = players[i];
+                if (player.position.x == x && player.position.y == y) {
+                    output += i;
+                    hasPlayer = true;
+                    break;
+                }
+            }
+            if (!hasPlayer) {
+                if (x == 3 && y == 2) {
+                    output += "^";
+                } else if (x == 2 && y == 3) {
+                    output += "$";
+                } else {
+                    output += ".";
+                }
+            }
+        }
+        output += "\n";
+    }
+    console.log(output);
+    for (let i = 0; i < players.length; i++) {
+        console.log("Player " + i + ":", players[i]);
+    }
+}
+
+renewMap();
