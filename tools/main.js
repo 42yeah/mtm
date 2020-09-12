@@ -18,16 +18,54 @@ let costMap = {
 };
 
 let baseCost = {
+    food: 122 + 22,
+    water: 130 + 26
+}; // Cost to reach the mine
+
+let villageCost = {
     food: 122,
     water: 130
-};
+}; // Cost to reach the village
+
+let initialMineCost = {
+    food: 22,
+    water: 26
+}; // Cost from village to mine
 
 let price = {
     food: 10,
     water: 5
 };
 
-let day = 10; // Arrives at day 10, which is a stormy day
+let day = 12; // Arrives at day 15
+let distToVillage = 1;
+let distToFin = 4;
+
+console.log(baseCost, villageCost);
+
+// let baseCost = {
+//     food: 122,
+//     water: 130
+// }; // Cost to reach the mine
+
+// let villageCost = {
+//     food: 98,
+//     water: 98
+// }; // Cost to reach the village
+
+// let initialMineCost = {
+//     food: 24,
+//     water: 32
+// }; // Cost from village to mine
+
+// let price = {
+//     food: 10,
+//     water: 5
+// };
+
+// let day = 10; // Arrives at day 15
+// let distToVillage = 2;
+// let distToFin = 5;
 
 function renderTickboxes(count) {
     let elem = document.querySelector("#tickboxes");
@@ -49,7 +87,6 @@ function min(a, b) {
 }
 
 function isOverweight(food, water) {
-    console.log("isOverweight: ", food, water, food * 2 + water * 3);
     return (food * 2 + water * 3) > 1200;
 }
 
@@ -59,9 +96,9 @@ function calculateCost() {
         water: baseCost.water
     };
     let mineCost = {
-        food: 24,
-        water: 32
-    }
+        food: initialMineCost.food,
+        water: initialMineCost.water
+    };
     let elems = document.querySelectorAll("[type=\"checkbox\"]");
     let earnings = 0;
     for (let i = 0; i < elems.length; i++) {
@@ -77,28 +114,30 @@ function calculateCost() {
     }
     // Now do the post-days - we need to go back!
     let aftermath = day + elems.length;
-    let dist = 5;
+    let dist = distToFin;
     while (dist > 0) {
         if (weathers[aftermath] == 3) {
             // Uh oh, sandstorm!
             totalCost.food += costMap.food[weathers[aftermath] - 1];
             totalCost.water += costMap.water[weathers[aftermath] - 1];
-            aftermath++;
-            if (dist > 3) {
+            if (dist > distToFin - distToVillage) {
                 // Not arrived at village... Yet.
                 mineCost.food += costMap.food[weathers[aftermath] - 1];
                 mineCost.water += costMap.water[weathers[aftermath] - 1];
+                console.log("Village additional cost: ", costMap.food[weathers[aftermath] - 1], costMap.water[weathers[aftermath] - 1]);
             }
+            aftermath++;
             continue;
         }
         totalCost.food += costMap.food[weathers[aftermath] - 1] * 2;
         totalCost.water += costMap.water[weathers[aftermath] - 1] * 2;
-        aftermath++;
-        if (dist >= 3) {
+        if (dist > distToFin - distToVillage) {
             // Not arrived at village... Yet.
             mineCost.food += costMap.food[weathers[aftermath] - 1] * 2;
             mineCost.water += costMap.water[weathers[aftermath] - 1] * 2;
+            console.log("Village additional cost: ", costMap.food[weathers[aftermath] - 1] * 2, costMap.water[weathers[aftermath] - 1] * 2);
         }
+        aftermath++;
         dist--;
     }
     
@@ -115,11 +154,11 @@ function calculateCost() {
     if (isOverweight(starterFood, starterWater)) {
         prompt += "<br />警告：起点买的物资已经超过了能带的上限。";
     }
-    if (starterFood < 98 || starterWater < 98) {
+    if (starterFood < villageCost.food || starterWater < villageCost.water) {
         prompt += "<br />警告：活不到村庄。";
     }
-    let arrivedFood = starterFood - 98;
-    let arrivedWater = starterWater - 98;
+    let arrivedFood = starterFood - villageCost.food;
+    let arrivedWater = starterWater - villageCost.water;
     let tbb = {
         food: max(mineCost.food - arrivedFood, 0),
         water: max(mineCost.water - arrivedWater, 0)
@@ -134,8 +173,8 @@ function calculateCost() {
     // There is a high possibility that this is too much. If it is,
     if (isOverweight(advice.food, advice.water)) {
         // Prioritize food over water (because food is EXPENSIVE)
-        let waterCount = min(max(Math.floor((1200 - totalCost.food * 2) / 3), 98), totalCost.water);
-        let foodCount = min(max(Math.floor((1200 - waterCount * 3) / 2), 98), totalCost.food);
+        let waterCount = min(max(Math.floor((1200 - totalCost.food * 2) / 3), villageCost.water), totalCost.water);
+        let foodCount = min(max(Math.floor((1200 - waterCount * 3) / 2), villageCost.food), totalCost.food);
         advice = {
             food: foodCount,
             water: waterCount
@@ -150,17 +189,15 @@ function calculateCost() {
         }
     }
     tbb = {
-        food: max(mineCost.food - (advice.food - 98), 0),
-        water: max(mineCost.water - (advice.water - 98), 0)
+        food: max(mineCost.food - (advice.food - villageCost.food), 0),
+        water: max(mineCost.water - (advice.water - villageCost.water), 0)
     }; // To be bought
     // Now does this makes you unable to replenish water at the village?
-    while (isOverweight(advice.food - 98 + tbb.food, advice.water - 98 + tbb.water)) {
+    while (isOverweight(advice.food - villageCost.food + tbb.food, advice.water - villageCost.water + tbb.water)) {
         // If it is, decrease food for a bit so at least we can replenish water at the village
-        let deltaspace = (advice.food - 98 + tbb.food) * 2 + (advice.water - 98 + tbb.water) * 3 - 1200;
+        let deltaspace = (advice.food - villageCost.food + tbb.food) * 2 + (advice.water - villageCost.water + tbb.water) * 3 - 1200;
         // With every two food decreased, one water could be bought at the start.
         // Which means with every two food, we need one less water.
-        console.log("Too much. Delta space: ", deltaspace);
-        console.log("Weight: ", (advice.food - 98 + tbb.food) * 2 + (98 + tbb.water) * 3);
         let deltaFood = Math.ceil(deltaspace / 2);
         advice.food -= deltaFood;
 
@@ -172,8 +209,8 @@ function calculateCost() {
         advice.water += deltaWater;
         // Loop this until it is reasonable.
         tbb = {
-            food: max(mineCost.food - (advice.food - 98), 0),
-            water: max(mineCost.water - (advice.water - 98), 0)
+            food: max(mineCost.food - (advice.food - villageCost.food), 0),
+            water: max(mineCost.water - (advice.water - villageCost.water), 0)
         }; // To be bought
         if (advice.food < 0 || advice.water < 0 || advice.food > 10000 || advice.water > 10000) {
             console.log("Anomaly!");
