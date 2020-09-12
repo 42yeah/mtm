@@ -3,7 +3,7 @@ let startFoodInput = document.querySelector("#start_food");
 let startWaterInput = document.querySelector("#start_water");
 
 let weathers = [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 ];
 
 // let weathers = [
@@ -30,7 +30,7 @@ let price = {
     water: 5
 };
 
-let day = 3; // Arrives at day 3
+let day = 5; // Arrives at day 5
 
 // Calculate the cost of walking
 function calcCost(day, duration) {
@@ -47,7 +47,7 @@ function calcCost(day, duration) {
 }
 
 let baseCost = calcCost(1, 3);
-let distToFin = 2;
+let distToFin = 3;
 
 function renderTickboxes(count) {
     let elem = document.querySelector("#tickboxes");

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedure</title>
+</head>
+<body>
+    <div>
+        <input type="radio" name="type" value="0" id="walk">
+        <label for="walk">走路</label>
+        <input type="radio" name="type" value="1" id="stay">
+        <label for="stay">呆着</label>
+        <input type="radio" name="type" value="2" id="mine">
+        <label for="mine">挖矿</label>
+        <input type="radio" name="type" value="3" id="checkpoint">
+        <label for="checkpoint">检查点</label>
+    </div>
+    <input placeholder="样本数量" id="samples" value="1000">
+    <input placeholder="增加过程 - 天" id="days"><button onclick="add()">增加</button>
+    <button onclick="simulate()">模拟</button>
+    <button onclick="splice()">splice</button>
+    <div id="procs"></div>
+    <div id="rate"></div>
+    <script src="proc.js"></script>
+</body>
+</html>

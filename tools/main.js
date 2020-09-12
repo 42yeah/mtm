@@ -41,8 +41,6 @@ let day = 12; // Arrives at day 15
 let distToVillage = 1;
 let distToFin = 4;
 
-console.log(baseCost, villageCost);
-
 // let baseCost = {
 //     food: 122,
 //     water: 130
