@@ -180,13 +180,13 @@ function think(player) {
     let spareDays = 1;
 
     // If the food can't last any longer, then they has to hit the shop NOW
-    if (!player.packed && (daysToLast(player) / 2 <= duration(pathToShop) + spareDays || player.mined && duration(pathToFin + spareDays) >= daysToLast(player) / 2)) {
+    if (!player.packed && (daysToLast(player) / 2 <= duration(pathToShop) + spareDays + 2 || player.mined && duration(pathToFin + spareDays) >= daysToLast(player) / 2)) {
         player.thought = "buy stuffs";
         if (onShopSquare) {
             if (duration(pathToMine) + spareDays >= (30 - player.day) || player.mined) {
                 // There is no time to mine now. Gotta go.
                 player.packed = true;
-                let req = meanRequirement(duration(pathToFin) + spareDays);
+                let req = meanRequirement(duration(pathToFin) + spareDays + 2);
                 // Perform purchase
                 let dFood = max(req.food - player.food, 0);
                 let dWater = max(req.water - player.water, 0);
@@ -300,11 +300,11 @@ function action(player) {
             break;
     }
     if (player.food < 0 || player.water < 0 || player.day >= 30) {
-        console.log("Player DISQUALIFIED");
+        // console.log("Player DISQUALIFIED");
         player.disqualified = true;
     }
     if (player.position.x == 4 && player.position.y == 4 && !player.disqualified) {
-        console.log("Player ARRIVED");
+        // console.log("Player ARRIVED");
         player.finished = true;
     }
     player.day++;
@@ -319,14 +319,14 @@ function turn() {
         think(player);
         action(player);
         if (player.disqualified) {
-            console.log("Player", i, "is disqualified");
+            // console.log("Player", i, "is disqualified");
             players.splice(i, 1);
             i--;
             continue;
         }
         if (player.finished) {
             let total = player.food * price.food * 0.5 + player.water * price.water * 0.5 + player.money;
-            console.log("Player", i, "finished with $", total);
+            // console.log("Player", i, "finished with $", total);
             players.splice(i, 1);
             score += total;
             i--;
@@ -357,11 +357,11 @@ function turn() {
         }
         output += "\n";
     }
-    console.log(output);
-    for (let i = 0; i < players.length; i++) {
-        console.log("Player " + i + ":", players[i]);
-    }
-    console.log("Score:", score);
+    // console.log(output);
+    // for (let i = 0; i < players.length; i++) {
+    //     console.log("Player " + i + ":", players[i]);
+    // }
+    // console.log("Score:", score);
 }
 
 renewMap();
@@ -369,7 +369,6 @@ renewMap();
 function reset() {
     score = 0;
     players = [ player(), player(), player() ];
-    players[2].mined = true;
 }
 
 let data = [];
