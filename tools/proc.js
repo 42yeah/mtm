@@ -81,7 +81,9 @@ function simpleMonteCarlo() {
         water: 0,
         days: 0,
         money: 0,
-        valid: true
+        valid: true,
+        startingFood: 0,
+        startingWater: 0
     };
     let check = {
         food: 0,
@@ -152,12 +154,14 @@ function simpleMonteCarlo() {
                 // Prioritze on FOOD
                 if (remainingWeight - foodCost * 2 < 0 && remainingWeight >= 0) {
                     let overflown = Math.ceil(-(remainingWeight - foodCost * 2) / 2);
+                    total.startingFood = total.food - overflown;
                     total.money += price.food * overflown;
                 }
                 remainingWeight -= foodCost * 2;
                 // Then water
                 if (remainingWeight - waterCost * 3 < 0 && remainingWeight >= 0) {
                     let overflown = Math.ceil(-(remainingWeight - waterCost * 3) / 3);
+                    total.startingWater = total.water - overflown;
                     total.money += price.water * overflown;
                 }
                 remainingWeight -= waterCost * 3;
@@ -169,6 +173,12 @@ function simpleMonteCarlo() {
     if (check.food * 2 + check.water * 3 > 1200) {
         // Disqualified
         total.valid = false;
+    }
+    if (total.startingFood == 0) {
+        total.startingFood = total.food;
+    }
+    if (total.startingWater == 0) {
+        total.startingWater = total.water;
     }
     total.money = 10000 - total.money;
     return total;
@@ -183,11 +193,16 @@ function simulate() {
             results.push(r);
         }
     }
-    let str = "food;water;days;money\n";
+    let meanFood = 0;
+    let meanWater = 0;
+    let str = "food;water;days;money;sf;sw\n";
     for (let i = 0; i < results.length; i++) {
         let r = results[i];
-        str += r.food + ";" + r.water + ";" + r.days + ";" + r.money + "\n";
+        str += r.food + ";" + r.water + ";" + r.days + ";" + r.money + ";" + r.startingFood + ";" + r.startingWater + "\n";
+        meanFood += r.startingFood;
+        meanWater += r.startingWater;
     }
-    document.querySelector("#rate").innerHTML = "存活率: " + (results.length / samples);
+    document.querySelector("#rate").innerHTML = "存活率: " + (results.length / samples) + "<br />" +
+        (meanFood) / results.length + ", " + (meanWater) / results.length;
     console.log(str);
 }

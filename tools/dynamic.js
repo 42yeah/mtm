@@ -319,14 +319,14 @@ function turn() {
         think(player);
         action(player);
         if (player.disqualified) {
-            // console.log("Player", i, "is disqualified");
+            console.log("Player", i, "is disqualified");
             players.splice(i, 1);
             i--;
             continue;
         }
         if (player.finished) {
             let total = player.food * price.food * 0.5 + player.water * price.water * 0.5 + player.money;
-            // console.log("Player", i, "finished with $", total);
+            console.log("Player", i, "finished with $", total);
             players.splice(i, 1);
             score += total;
             i--;

@@ -73,6 +73,7 @@ xlabel('天数');
 ylabel('金额');
 zlabel('频数');
 title('挖 4 天矿 - 回村 - 挖 4 天矿 - 回村 - 挖 3 天矿 - 到终点');
+disp('mean food: ' + string(mean(T.food)) + ', mean water: ' + string(mean(T.water)));
 
 figure;
 data = [30 34; 24 26; 6 8; 0 0];
