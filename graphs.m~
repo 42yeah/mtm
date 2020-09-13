@@ -59,15 +59,58 @@ ylabel('金额');
 zlabel('频数');
 title('挖四天矿');
 subplot(2, 2, 4);
-T = readtable('data/monte.carlo/dig.6.csv');
+T = readtable('data/monte.carlo/dig.5.csv');
 histogram2(T.days, T.money);
 xlabel('天数');
 ylabel('金额');
 zlabel('频数');
-title('挖六天矿 (开始有人失败)');
+title('挖五天矿 (开始有人失败)');
+
+T = readtable('data/monte.carlo/dig.ult.csv');
+figure;
+histogram2(T.days, T.money);
+xlabel('天数');
+ylabel('金额');
+zlabel('频数');
+title('挖 4 天矿 - 回村 - 挖 4 天矿 - 回村 - 挖 3 天矿 - 到终点');
 
 figure;
-data = [30 34; 28 26; 6 8; ];
+data = [30 34; 24 26; 6 8; 0 0];
+subplot(1, 2, 1);
+bar3(data);
+legend('水', '食物');
+xlabel('天数');
+zlabel('数量（箱）');
+title('玩家一');
+subplot(1, 2, 2);
+data = [33 38; 30 34; 12 16; 6 8; 0 0];
+bar3(data);
+legend('水', '食物');
+xlabel('天数');
+zlabel('数量（箱）');
+title('玩家二');
+
+figure;
+subplot(1, 2, 1);
+T = readtable('data/monte.carlo/dig.initial.csv');
+histogram2(T.days, T.money);
+xlabel('天数');
+ylabel('金额');
+zlabel('频数');
+title('直接走到终点');
+subplot(1, 2, 2);
+T = readtable('data/monte.carlo/dig.consect.csv');
+histogram2(T.days, T.money);
+xlabel('天数');
+ylabel('金额');
+zlabel('频数');
+title('挖矿');
+
+T = table2array(readtable('data/monte.carlo/dig.ev.csv'));
+figure;
+histogram(T);
+xlabel('最终合计金额');
+ylabel('pin s
 
 function ret = f(x, y)
     ex = x .* 48 + (1.0 - x) .* 144;

@@ -14,7 +14,9 @@ function player() {
         action: null,
         day: 0,
         disqualified: false,
-        finished: false
+        finished: false,
+        mined: false,
+        packed: false
     };
 }
 
@@ -124,6 +126,7 @@ let price = {
     food: 10,
     water: 5
 };
+let score = 0;
 
 function bar(chance) {
     for (let i = 0; i < weatherBar.length; i++) {
@@ -142,8 +145,8 @@ let wotd = 0; // Weather should be randomized at the beginning
 
 function meanRequirement(days) {
     return {
-        food: Math.ceil(mean.food * days),
-        water: Math.ceil(mean.water * days)
+        food: Math.ceil(mean.food * days) * 2,
+        water: Math.ceil(mean.water * days) * 2
     };
 }
 
@@ -174,14 +177,15 @@ function think(player) {
     let pathToShop = pathfind(player.position, pos(3, 2));
     let pathToMine = pathfind(player.position, pos(2, 3));
     let mineToShop = pathfind(pos(2, 3), pos(3, 2));
-    let spareDays = players.length;
+    let spareDays = 1;
 
     // If the food can't last any longer, then they has to hit the shop NOW
-    if (daysToLast(player) <= duration(pathToShop) + spareDays) {
+    if (!player.packed && (daysToLast(player) / 2 <= duration(pathToShop) + spareDays || player.mined && duration(pathToFin + spareDays) >= daysToLast(player) / 2)) {
         player.thought = "buy stuffs";
         if (onShopSquare) {
-            if (duration(pathToMine) + spareDays >= (30 - player.day)) {
+            if (duration(pathToMine) + spareDays >= (30 - player.day) || player.mined) {
                 // There is no time to mine now. Gotta go.
+                player.packed = true;
                 let req = meanRequirement(duration(pathToFin) + spareDays);
                 // Perform purchase
                 let dFood = max(req.food - player.food, 0);
@@ -219,6 +223,9 @@ function think(player) {
                 }
             }
         } else {
+            if (player.action.type == "mine") {
+                player.mined = true;
+            }
             // Walk towards it
             player.action = {
                 type: "go",
@@ -227,7 +234,7 @@ function think(player) {
             return;
         }
     }
-    if ((30 - player.day) <= duration(pathToFin) + spareDays) {
+    if ((30 - player.day) <= duration(pathToFin) + spareDays || player.mined || player.packed) {
         // Gotta go!
         player.action = {
             type: "go",
@@ -289,7 +296,7 @@ function action(player) {
             }
             player.food -= costMap.food[wotd] * 3;
             player.water -= costMap.water[wotd] * 3;
-            player.money += 200;
+            player.money += 1000;
             break;
     }
     if (player.food < 0 || player.water < 0 || player.day >= 30) {
@@ -312,13 +319,18 @@ function turn() {
         think(player);
         action(player);
         if (player.disqualified) {
-            console.log("Player", i, "is disqualified");
+            // console.log("Player", i, "is disqualified");
             players.splice(i, 1);
+            i--;
+            continue;
         }
         if (player.finished) {
             let total = player.food * price.food * 0.5 + player.water * price.water * 0.5 + player.money;
-            console.log("Player", i, "finished with $", total);
+            // console.log("Player", i, "finished with $", total);
             players.splice(i, 1);
+            score += total;
+            i--;
+            continue;
         }
     }
     let output = "";
@@ -349,6 +361,38 @@ function turn() {
     for (let i = 0; i < players.length; i++) {
         console.log("Player " + i + ":", players[i]);
     }
+    console.log("Score:", score);
 }
 
 renewMap();
+
+function reset() {
+    score = 0;
+    players = [ player(), player(), player() ];
+    players[2].mined = true;
+}
+
+let data = [];
+
+function test(samples) {
+    let sum = 0;
+    let high = 0;
+    for (let i = 0; i < samples; i++) {
+        reset();
+        while (players.length > 0) {
+            turn();
+        }
+        data.push(score);
+        sum += score;
+        console.log("E = ", sum / (i + 1));   
+        if (score > high) {
+            high = score;
+        } 
+    }
+    let str = "";
+    for (let i = 0; i < samples; i++) {
+        str += data[i] + "\n";
+    }
+    console.log(str);
+    console.log("E = ", sum / samples, " HI = ", high);
+}

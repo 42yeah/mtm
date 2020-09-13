@@ -18,18 +18,18 @@ let costMap = {
 };
 
 let baseCost = {
-    food: 122 + 22,
-    water: 130 + 26
+    food: 227 + 12,
+    water: 247 + 16
 }; // Cost to reach the mine
 
 let villageCost = {
-    food: 122,
-    water: 130
+    food: 227,
+    water: 247
 }; // Cost to reach the village
 
 let initialMineCost = {
-    food: 22,
-    water: 26
+    food: 12,
+    water: 16
 }; // Cost from village to mine
 
 let price = {
@@ -37,7 +37,7 @@ let price = {
     water: 5
 };
 
-let day = 12; // Arrives at day 15
+let day = 16; // Arrives at day 16
 let distToVillage = 1;
 let distToFin = 4;
 
@@ -98,7 +98,7 @@ function calculateCost() {
         water: initialMineCost.water
     };
     let elems = document.querySelectorAll("[type=\"checkbox\"]");
-    let earnings = 0;
+    let earnings = 5000;
     for (let i = 0; i < elems.length; i++) {
         let targetDay = elems[i].getAttribute("target");
         let multiplier = elems[i].checked ? 3 : 1;
